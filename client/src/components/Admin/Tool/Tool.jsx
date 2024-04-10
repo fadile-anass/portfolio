@@ -7,7 +7,7 @@ function Tool ()  {
     const [icons, setIcons] = useState([]);
 
     const fetchData = () => {
-      fetch('http://localhost:3001/tool')
+      fetch('bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/tool')
           .then(response => response.json())
           .then(data => {
               const fetchedIcons = data.map(icon => ({
@@ -30,7 +30,7 @@ function Tool ()  {
   
     const handleDelete = async (id) => {
       try {
-        await fetch(`http://localhost:3001/tool/delete/${id}`, {
+        await fetch(`bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/tool/delete/${id}`, {
           method: 'DELETE'
         });
         setIcons(icons.filter(icon => icon.id !== id));

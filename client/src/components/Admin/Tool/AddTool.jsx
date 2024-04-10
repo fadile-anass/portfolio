@@ -9,7 +9,7 @@ const AddTool = () => {
 
     try {
       // Await the Axios request and handle the response
-      const response = await Axios.post("http://localhost:3001/tool/create",{name:name, toolIcon : toolIcon});
+      const response = await Axios.post("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/tool/create",{name:name, toolIcon : toolIcon});
 
       // Check if the request was successful
       if (response.status === 200) {

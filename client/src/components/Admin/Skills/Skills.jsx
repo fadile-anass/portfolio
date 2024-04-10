@@ -6,7 +6,7 @@ function Skills() {
   const [icons, setIcons] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/Skills')
+    fetch('bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/Skills')
       .then(response => response.json())
       .then(data => {
         const fetchedIcons = data.map(icon => ({
@@ -21,7 +21,7 @@ function Skills() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:3001/delete/Skills/${id}`, {
+      await fetch(`bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/delete/Skills/${id}`, {
         method: 'DELETE'
       });
       setIcons(icons.filter(icon => icon.id !== id));

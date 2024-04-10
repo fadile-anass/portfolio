@@ -23,7 +23,7 @@ const AddResume = () => {
       formData.append('pdf', pdf);
       
       try {
-        await Axios.post("http://localhost:3001/resume/create", formData);
+        await Axios.post("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/resume/create", formData);
         console.log("Resume added successfully");
         // Optionally, reset the form after successful submission
         setName("");

@@ -24,7 +24,7 @@ function ResumeNew() {
   }, []);
 
   const showResume = () => {
-    Axios.get("http://localhost:3001/resume")
+    Axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/resume")
       .then((response) => {
         setResume(response.data); // Update projects state with data from the server
       })

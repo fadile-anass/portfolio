@@ -18,7 +18,7 @@ const Project = () => {
   }, []);
 
   const showProjects = () => {
-    Axios.get("http://localhost:3001/projects")
+    Axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/projects")
       .then((response) => {
         setProjects(response.data); // Update projects state with data from the server
       })
@@ -28,7 +28,7 @@ const Project = () => {
   };
 
   const handleDelete = (projectId) => {
-    Axios.delete(`http://localhost:3001/delete/${projectId}`)
+    Axios.delete(`bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/delete/${projectId}`)
       .then((response) => {
         console.log("Project deleted successfully");
         setProjects(projects.filter(project => project.id !== projectId));
