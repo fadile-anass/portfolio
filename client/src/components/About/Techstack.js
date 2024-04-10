@@ -9,7 +9,7 @@ function Techstack() {
   useEffect(() => {
     const fetchIconData = async () => {
       try {
-        const response = await axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/skills"); // Fetch icon data from backend
+        const response = await axios.get("https://portfolio-xqtv.onrender.com/skills"); // Fetch icon data from backend
         setIconsData(response.data); // Set fetched icon data to state
       } catch (error) {
         console.error("Error fetching icon data:", error);

@@ -6,7 +6,7 @@ function Skills() {
   const [icons, setIcons] = useState([]);
 
   useEffect(() => {
-    fetch('bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/Skills')
+    fetch('https://portfolio-xqtv.onrender.com/Skills')
       .then(response => response.json())
       .then(data => {
         const fetchedIcons = data.map(icon => ({
@@ -21,7 +21,7 @@ function Skills() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/delete/Skills/${id}`, {
+      await fetch(`https://portfolio-xqtv.onrender.com/delete/Skills/${id}`, {
         method: 'DELETE'
       });
       setIcons(icons.filter(icon => icon.id !== id));

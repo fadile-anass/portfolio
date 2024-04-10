@@ -18,7 +18,7 @@ const ListResume = () => {
   }, []);
 
   const showResumes = () => {
-    Axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/resume")
+    Axios.get("https://portfolio-xqtv.onrender.com/resume")
       .then((response) => {
         setResumes(response.data);
       })
@@ -28,7 +28,7 @@ const ListResume = () => {
   };
 
   const handleDelete = (resumeId) => {
-    Axios.delete(`bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/resume/delete/${resumeId}`)
+    Axios.delete(`https://portfolio-xqtv.onrender.com/resume/delete/${resumeId}`)
       .then((response) => {
         console.log("ListResume deleted successfully");
         setResumes(resumes.filter(resume => resume.id !== resumeId));

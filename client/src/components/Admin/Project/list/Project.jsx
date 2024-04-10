@@ -18,7 +18,7 @@ const Project = () => {
   }, []);
 
   const showProjects = () => {
-    Axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/projects")
+    Axios.get("https://portfolio-xqtv.onrender.com/projects")
       .then((response) => {
         setProjects(response.data); // Update projects state with data from the server
       })
@@ -28,7 +28,7 @@ const Project = () => {
   };
 
   const handleDelete = (projectId) => {
-    Axios.delete(`bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/delete/${projectId}`)
+    Axios.delete(`https://portfolio-xqtv.onrender.com/delete/${projectId}`)
       .then((response) => {
         console.log("Project deleted successfully");
         setProjects(projects.filter(project => project.id !== projectId));

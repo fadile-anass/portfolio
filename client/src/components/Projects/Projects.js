@@ -14,7 +14,7 @@ function Projects() {
   }, []);
 
   const showProjects = () => {
-    Axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/projects")
+    Axios.get("https://portfolio-xqtv.onrender.com/projects")
       .then((response) => {
         setProjects(response.data); // Update projects state with data from the server
       })

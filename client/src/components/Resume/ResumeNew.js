@@ -3,7 +3,7 @@ import { Container, Row } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Particle from "../Particle";
 import Axios from "axios";
-import pdf from "../../Assets/../Assets/af.pdf";
+// import pdf from "../../Assets/../Assets/af.pdf";
 import { AiOutlineDownload } from "react-icons/ai";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -24,7 +24,7 @@ function ResumeNew() {
   }, []);
 
   const showResume = () => {
-    Axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/resume")
+    Axios.get("https://portfolio-xqtv.onrender.com/resume")
       .then((response) => {
         setResume(response.data); // Update projects state with data from the server
       })

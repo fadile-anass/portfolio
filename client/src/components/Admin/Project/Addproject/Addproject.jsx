@@ -22,7 +22,7 @@ export const Addproject = () => {
       formData.append('img', img);
       
       try {
-        await Axios.post("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/create", formData);
+        await Axios.post("https://portfolio-xqtv.onrender.com/create", formData);
         console.log("Project added successfully");
         // Optionally, reset the form after successful submission
         setTitle("");
