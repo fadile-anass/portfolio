@@ -8,7 +8,7 @@ function Type() {
   useEffect(() => {
     const fetchTypeData = async () => {
       try {
-        const response = await axios.get("https://portfolio-xqtv.onrender.com:3001/Type");
+        const response = await axios.get("https://portfolio-xqtv.onrender.com/Type");
         setTypeData(response.data);
       } catch (error) {
         console.error("Error fetching type data:", error);
