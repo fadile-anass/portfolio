@@ -10,10 +10,10 @@ app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "portfolio",
+  host: "bupiy2misormevi16khy-mysql.services.clever-cloud.com",
+  user: "uxjk5nogvu6kvvx5",
+  password: "2VGJKnQ9DsvYXNnHWYUn",
+  database: "bupiy2misormevi16khy",
 });
 
 db.connect((err) => {
@@ -318,6 +318,7 @@ app.delete("/tool/delete/:id", (req, res) => {
 //=====================Type===========================
 app.get("/type", (req, res) => {
   db.query("SELECT * FROM type", (err, results) => {
+    console.log(results);
     if (err) {
       console.error("Error querying tool:", err);
       res.status(500).send("Error fetching tool");
