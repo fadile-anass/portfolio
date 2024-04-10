@@ -10,7 +10,7 @@ const AddSkills = () => {
 
     try {
       // Await the Axios request and handle the response
-      const response = await Axios.post("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/skills/create",{name:name, iconName : iconName});
+      const response = await Axios.post("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/skills/create",{name:name, iconName : iconName});
 
       // Check if the request was successful
       if (response.status === 200) {

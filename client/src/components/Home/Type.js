@@ -8,7 +8,7 @@ function Type() {
   useEffect(() => {
     const fetchTypeData = async () => {
       try {
-        const response = await axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3306/Type");
+        const response = await axios.get("bupiy2misormevi16khy-mysql.services.clever-cloud.com:3001/Type");
         setTypeData(response.data);
       } catch (error) {
         console.error("Error fetching type data:", error);
