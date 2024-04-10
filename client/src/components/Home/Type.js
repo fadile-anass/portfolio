@@ -8,11 +8,7 @@ function Type() {
   useEffect(() => {
     const fetchTypeData = async () => {
       try {
-<<<<<<< HEAD
         const response = await axios.get("https://portfolio-xqtv.onrender.com/type");
-=======
-        const response = await axios.get("https://portfolio-xqtv.onrender.com/Type");
->>>>>>> 5fa83ec4aeed415e8abf758055912ee09d62eb95
         setTypeData(response.data);
       } catch (error) {
         console.error("Error fetching type data:", error);
