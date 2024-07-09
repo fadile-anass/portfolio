@@ -24,7 +24,7 @@ function ResumeNew() {
   }, []);
 
   const showResume = () => {
-    Axios.get("https://portfolio-xqtv.onrender.com/resume")
+    Axios.get("https://localhost:3001/resume")
       .then((response) => {
         setResume(response.data); // Update projects state with data from the server
       })
