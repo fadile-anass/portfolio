@@ -5,29 +5,32 @@ const cors = require("cors");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" }); 
 const fs = require('fs');
+const { Pool } = require('pg');
+
 
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  host: "nimble-gnu-5795.6zw.aws-eu-west-1.cockroachlabs.cloud",
-  user: "anass",
-  password: "_kAfRzEF9jd6xazu-14ZJg",
-  database: "portfolio",
-  port: 26257, // Port number extracted from the connection string
+// Replace with your PostgreSQL connection string
+const connectionString = 'postgresql://anass:x3A9UpCAPGVPyHmmhSGT2w@nimble-gnu-5795.6zw.aws-eu-west-1.cockroachlabs.cloud:26257/portfolio?sslmode=verify-full';
+
+// Create a new pool instance
+const pool = new Pool({
+  connectionString: connectionString,
   ssl: {
-    rejectUnauthorized: true, // Equivalent to `sslmode=verify-full` in PostgreSQL
-  },
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error("Error connecting to database:", err);
-    return;
+    rejectUnauthorized: false // Disable SSL rejection for self-signed certificates (for development/testing)
   }
-  console.log("Connected to the database");
 });
 
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('Error connecting to PostgreSQL:', err);
+  } else {
+    console.log('Connected to PostgreSQL');
+  }
+  // Close the connection pool
+  pool.end();
+});
 app.post("/create", upload.single('img'), (req, res) => {
     const title = req.body.title;
     const description = req.body.description;
