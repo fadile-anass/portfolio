@@ -10,10 +10,14 @@ app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-  host: "bupiy2misormevi16khy-mysql.services.clever-cloud.com",
-  user: "uxjk5nogvu6kvvx5",
-  password: "2VGJKnQ9DsvYXNnHWYUn",
-  database: "bupiy2misormevi16khy",
+  host: "nimble-gnu-5795.6zw.aws-eu-west-1.cockroachlabs.cloud",
+  user: "anass",
+  password: "_kAfRzEF9jd6xazu-14ZJg",
+  database: "defaultdb",
+  port: 26257, // Port number extracted from the connection string
+  ssl: {
+    rejectUnauthorized: true, // Equivalent to `sslmode=verify-full` in PostgreSQL
+  },
 });
 
 db.connect((err) => {
