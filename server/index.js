@@ -13,7 +13,7 @@ const db = mysql.createConnection({
   host: "nimble-gnu-5795.6zw.aws-eu-west-1.cockroachlabs.cloud",
   user: "anass",
   password: "_kAfRzEF9jd6xazu-14ZJg",
-  database: "defaultdb",
+  database: "portfolio",
   port: 26257, // Port number extracted from the connection string
   ssl: {
     rejectUnauthorized: true, // Equivalent to `sslmode=verify-full` in PostgreSQL
