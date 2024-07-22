@@ -8,8 +8,12 @@ const fs = require('fs');
 const path = require('path');
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*', // Allow requests from the URL specified in the .env file
+}));
 app.use(express.json());
+app.set('view engine', 'ejs'); // Set EJS as the templating engine
+app.set('views', path.join(__dirname, 'views')); // Set the directory for EJS templates
 
 // Database Connection
 const pool = mysql.createPool({
@@ -23,6 +27,11 @@ const promisePool = pool.promise();
 
 // File Upload Configuration
 const upload = multer({ dest: "uploads/" });
+
+// Default Route to Render EJS Template
+app.get("/", (req, res) => {
+  res.render('index', { message: 'Hello World' });
+});
 
 // Routes
 app.post("/create", upload.single('img'), async (req, res) => {
