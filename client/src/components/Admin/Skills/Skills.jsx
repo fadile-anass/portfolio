@@ -6,7 +6,7 @@ function Skills() {
   const [icons, setIcons] = useState([]);
 
   useEffect(() => {
-    fetch('https://portfolio-xqtv.onrender.com/Skills')
+    fetch(`${process.env.REACT_APP_BACKEND_URI}/Skills`)
       .then(response => response.json())
       .then(data => {
         const fetchedIcons = data.map(icon => ({
@@ -21,7 +21,7 @@ function Skills() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`https://portfolio-xqtv.onrender.com/delete/Skills/${id}`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URI}/delete/Skills/${id}`, {
         method: 'DELETE'
       });
       setIcons(icons.filter(icon => icon.id !== id));
@@ -34,7 +34,7 @@ function Skills() {
     <div className="container mt-4">
       <div className="d-flex justify-content-between mb-3">
         <button className="btn btn-primary" onClick={() => setIcons([])}>Refresh</button>
-        <Link className="btn btn-primary" to="/admin/Skills/AddSkills">Add</Link>
+        <Link className="btn btn-primary" to="/admin/Skills/add">Add</Link>
       </div>
 
       <table className="table table-striped">

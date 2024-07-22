@@ -1,340 +1,250 @@
+require('dotenv').config(); // Add this line at the top of your file
 const express = require("express");
 const app = express();
 const mysql = require("mysql2");
 const cors = require("cors");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" }); 
 const fs = require('fs');
-const { Pool } = require('pg');
+const path = require('path');
 
-
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Replace with your PostgreSQL connection string
-const connectionString = 'postgresql://anass:x3A9UpCAPGVPyHmmhSGT2w@nimble-gnu-5795.6zw.aws-eu-west-1.cockroachlabs.cloud:26257/portfolio?sslmode=verify-full';
-
-// Create a new pool instance
-const pool = new Pool({
-  connectionString: connectionString,
-  ssl: {
-    rejectUnauthorized: false // Disable SSL rejection for self-signed certificates (for development/testing)
-  }
+// Database Connection
+const pool = mysql.createPool({
+  uri: process.env.mysql_uri,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.error('Error connecting to PostgreSQL:', err);
-  } else {
-    console.log('Connected to PostgreSQL');
-  }
-  // Close the connection pool
-  pool.end();
-});
-app.post("/create", upload.single('img'), (req, res) => {
-    const title = req.body.title;
-    const description = req.body.description;
-    const ghlink = req.body.ghlink;
+const promisePool = pool.promise();
+
+// File Upload Configuration
+const upload = multer({ dest: "uploads/" });
+
+// Routes
+app.post("/create", upload.single('img'), async (req, res) => {
+  try {
+    const { title, description, ghlink } = req.body;
     const imgPath = req.file.path; 
 
     const imgData = fs.readFileSync(imgPath);
     
-    db.query(
+    await promisePool.query(
       "INSERT INTO projects (title, description, ghlink, image) VALUES (?, ?, ?, ?)",
-      [title, description, ghlink ,imgData],
-      (err, result) => {
-        if (err) {
-          console.error("Error inserting data into database:", err);
-          res.status(500).send("Error inserting data into database");
-        } else {
-          console.log("Data inserted successfully");
-          res.status(200).send("Data inserted successfully");
-        }
-      }
+      [title, description, ghlink, imgData]
     );
+    fs.unlinkSync(imgPath); // Remove the file after upload
+    res.status(200).send("Data inserted successfully");
+  } catch (err) {
+    console.error("Error inserting data into database:", err);
+    res.status(500).send("Error inserting data into database");
+  }
 });
 
-app.get("/projects", (req, res) => {
-  db.query("SELECT * FROM projects", (err, results) => {
-    if (err) {
-      console.error("Error retrieving data from database:", err);
-      res.status(500).send("Error retrieving data from database");
+app.get("/projects", async (req, res) => {
+  try {
+    const [results] = await promisePool.query("SELECT * FROM projects");
+    const projectsWithBase64Images = results.map(project => {
+      const base64Image = project.image.toString("base64");
+      return { ...project, image: base64Image };
+    });
+    res.json(projectsWithBase64Images);
+  } catch (err) {
+    console.error("Error retrieving data from database:", err);
+    res.status(500).send("Error retrieving data from database");
+  }
+});
+
+app.delete("/delete/:id", async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    await promisePool.query("DELETE FROM projects WHERE id = ?", [projectId]);
+    res.status(200).send("Project deleted successfully");
+  } catch (err) {
+    console.error("Error deleting project:", err);
+    res.status(500).send("Error deleting project");
+  }
+});
+
+app.get("/projects/:id", async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const [results] = await promisePool.query("SELECT * FROM projects WHERE id = ?", [projectId]);
+    if (results.length > 0) {
+      res.status(200).json(results[0]);
     } else {
-      // Convert BLOBs to Base64-encoded strings before sending the response
-      const projectsWithBase64Images = results.map(project => {
-        // Convert the BLOB image data to a Base64-encoded string
-        const base64Image = project.image.toString("base64");
-        // Create a new object with the Base64-encoded image data
-        return {
-          ...project,
-          image: base64Image
-        };
-      });
-      res.send(projectsWithBase64Images);
+      res.status(404).send("Project not found");
     }
-  });
+  } catch (err) {
+    console.error("Error retrieving project:", err);
+    res.status(500).send("Error retrieving project");
+  }
 });
-app.delete("/delete/:id", (req, res) => {
-  const projectId = req.params.id;
 
-  db.query("DELETE FROM projects WHERE id = ?", projectId, (err, result) => {
-    if (err) {
-      console.error("Error deleting project:", err);
-      res.status(500).send("Error deleting project");
+app.put("/update/:projectId", upload.single('image'), async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+    const { title, description, ghLink } = req.body;
+    const imagePath = req.file.path;
+
+    const imgData = fs.readFileSync(imagePath);
+    await promisePool.query(
+      "UPDATE projects SET title = ?, description = ?, ghlink = ?, image = ? WHERE id = ?",
+      [title, description, ghLink, imgData, projectId]
+    );
+    fs.unlinkSync(imagePath); // Remove the file after upload
+    res.status(200).send("Project updated successfully");
+  } catch (err) {
+    console.error("Error updating project:", err);
+    res.status(500).send("Error updating project");
+  }
+});
+
+// Resume Routes
+app.get("/resume", async (req, res) => {
+  try {
+    const [results] = await promisePool.query("SELECT * FROM resume");
+    if (results.length === 0) {
+      res.status(404).send("No resumes found");
     } else {
-      console.log("Project deleted successfully");
-      res.status(200).send("Project deleted successfully");
+      const resumes = await Promise.all(results.map(async (resumeData) => {
+        const pdfPath = resumeData.pdf;
+        try {
+          const data = await fs.promises.readFile(pdfPath);
+          return {
+            id: resumeData.id,
+            name: resumeData.name,
+            link: resumeData.link,
+            pdf: data
+          };
+        } catch (err) {
+          console.error("Error reading PDF file:", err);
+          return null;
+        }
+      }));
+      res.json(resumes.filter(resume => resume !== null));
     }
-  });
+  } catch (err) {
+    console.error("Error retrieving data from database:", err);
+    res.status(500).send("Error retrieving data from database");
+  }
 });
 
+app.post("/resume/create", upload.single('pdf'), async (req, res) => {
+  try {
+    const { name, link } = req.body;
+    const pdfPath = req.file.path;
 
-app.get("/projects/:id", (req, res) => {
-  const projectId = req.params.id;
-
-  db.query("SELECT * FROM projects WHERE id = ?", projectId, (err, results) => {
-    if (err) {
-      console.error("Error retrieving project:", err);
-      res.status(500).send("Error retrieving project");
-    } else {
-      if (results.length > 0) {
-        // Assuming that your project data is stored in the first element of the results array
-        const project = results[0];
-        res.status(200).send(project);
-      } else {
-        res.status(404).send("Project not found");
-      }
-    }
-  });
+    await promisePool.query(
+      "INSERT INTO resume (name, link, pdf) VALUES (?, ?, ?)",
+      [name, link, pdfPath]
+    );
+    res.status(200).send("Data inserted successfully");
+  } catch (err) {
+    console.error("Error inserting data into database:", err);
+    res.status(500).send("Error inserting data into database");
+  }
 });
 
-
-app.put("/update/:projectId", upload.single('image'), (req, res) => {
-  const projectId = req.params.projectId;
-  const title = req.body.title;
-  const description = req.body.description;
-  const ghLink = req.body.ghLink;
-  const image = req.file.path; 
-
-  const imgData = fs.readFileSync(image);
-  // Check if all required fields are provided
-
-
-  // Now, you can pass the 'title', 'description', 'ghLink', 'image', and 'projectId' values
-  // to the 'db.query()' function as arguments.
-  db.query(
-    "UPDATE projects SET title = ?, description = ?, ghlink = ?, image = ? WHERE id = ?",
-    [title, description, ghLink, imgData, projectId],
-    (err, result) => {
-      if (err) {
-        console.error("Error updating project:", err);
-        res.status(500).send("Error updating project");
-      } else {
-        console.log("Project updated successfully");
-        res.status(200).send("Project updated successfully");
-      }
-    }
-  );
+app.delete("/resume/delete/:id", async (req, res) => {
+  try {
+    const resumeId = req.params.id;
+    await promisePool.query("DELETE FROM resume WHERE id = ?", [resumeId]);
+    res.status(200).send("Resume deleted successfully");
+  } catch (err) {
+    console.error("Error deleting resume:", err);
+    res.status(500).send("Error deleting resume");
+  }
 });
 
-
-
-
-//=============================================for resume==========================================================================
-const fss = require('fs');
-
-app.get("/resume", (req, res) => {
-  db.query("SELECT * FROM resume", (err, results) => {
-    if (err) {
-      console.error("Error retrieving data from database:", err);
-      res.status(500).send("Error retrieving data from database");
-    } else {
-      if (results.length === 0) {
-        res.status(404).send("No resumes found");
-      } else {
-        // Initialize an array to store resume data
-        const resumes = [];
-
-        // Iterate through the results and read each PDF file
-        results.forEach((resumeData) => {
-          const pdfPath = resumeData.pdf; // Assuming the 'pdf' column stores the path to the PDF file
-
-          // Read the PDF file
-          fss.readFile(pdfPath, (err, data) => {
-            if (err) {
-              console.error("Error reading PDF file:", err);
-              res.status(500).send("Error reading PDF file");
-              return; // Exit early if there's an error
-            }
-
-            // Push the resume data along with the PDF data to the resumes array
-            resumes.push({
-              id: resumeData.id, // Assuming there's an 'id' column in your 'resume' table
-              name: resumeData.name, // Assuming there's a 'name' column in your 'resume' table
-              Link: resumeData.Link, // Assuming there's a 'link' column in your 'resume' table
-              pdf: data // PDF data
-            });
-
-            // Check if all resumes have been processed
-            if (resumes.length === results.length) {
-              // Send the resumes array as the response
-              res.send(resumes);
-            }
-          });
-        });
-      }
-    }
-  });
+// Skills Routes
+app.post("/skills/create", async (req, res) => {
+  try {
+    const { name, iconName } = req.body;
+    await promisePool.query(
+      "INSERT INTO skills (name, iconName) VALUES (?, ?)",
+      [name, iconName]
+    );
+    res.status(200).send("Data inserted successfully");
+  } catch (err) {
+    console.error("Error inserting data into database:", err);
+    res.status(500).send("Error inserting data into database");
+  }
 });
 
-
-
-
-app.post("/resume/create", upload.single('pdf'), (req, res) => {
-  const name = req.body.name;
-  const link = req.body.link;
-  const pdf = req.file.path; 
-
-  // const imgData = fs.readFileSync(imgPath);
-  
-  db.query(
-    "INSERT INTO resume (name, link, pdf) VALUES (?, ?, ?)",
-    [name ,link ,pdf],
-    (err, result) => {
-      if (err) {
-        console.error("Error inserting data into database:", err);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Data inserted successfully");
-      }
-    }
-  );
+app.get("/skills", async (req, res) => {
+  try {
+    const [results] = await promisePool.query("SELECT * FROM skills");
+    res.json(results);
+  } catch (err) {
+    console.error("Error querying skills:", err);
+    res.status(500).send("Error fetching skills");
+  }
 });
 
-app.delete("/resume/delete/:id", (req, res) => {
-  const resumeId = req.params.id;
-
-  db.query("DELETE FROM resume WHERE id = ?", resumeId, (err, result) => {
-    if (err) {
-      console.error("Error deleting project:", err);
-      res.status(500).send("Error deleting project");
-    } else {
-      console.log("Project deleted successfully");
-      res.status(200).send("Project deleted successfully");
-    }
-  });
+app.delete("/skills/delete/:id", async (req, res) => {
+  try {
+    const skillsId = req.params.id;
+    await promisePool.query("DELETE FROM skills WHERE id = ?", [skillsId]);
+    res.status(200).send("Skill deleted successfully");
+  } catch (err) {
+    console.error("Error deleting skill:", err);
+    res.status(500).send("Error deleting skill");
+  }
 });
 
-
-//===========================skills===============================
-app.post("/skills/create", (req, res) => {
-  const { name, iconName } = req.body;
-  
-  console.log("Name:", name);
-  console.log("Icon Name:", iconName);
-  
-  db.query(
-    "INSERT INTO skills (name, iconName) VALUES (?, ?)",
-    [name, iconName],
-    (err, result) => {
-      if (err) {
-        console.error("Error inserting data into database:", err);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Data inserted successfully");
-      }
-    }
-  );
+// Tool Routes
+app.post("/tool/create", async (req, res) => {
+  try {
+    const { name, toolIcon } = req.body;
+    await promisePool.query(
+      "INSERT INTO tool (name, toolIcon) VALUES (?, ?)",
+      [name, toolIcon]
+    );
+    res.status(200).send("Data inserted successfully");
+  } catch (err) {
+    console.error("Error inserting data into database:", err);
+    res.status(500).send("Error inserting data into database");
+  }
 });
 
-app.get("/skills", (req, res) => {
-  db.query("SELECT * FROM skills", (err, results) => {
-    if (err) {
-      console.error("Error querying skills:", err);
-      res.status(500).send("Error fetching skills");
-    } else {
-      res.json(results);
-    }
-  });
+app.get("/tool", async (req, res) => {
+  try {
+    const [results] = await promisePool.query("SELECT * FROM tool");
+    res.json(results);
+  } catch (err) {
+    console.error("Error querying tool:", err);
+    res.status(500).send("Error fetching tool");
+  }
 });
 
-app.delete("/skills/delete/:id", (req, res) => {
-  const skillsId = req.params.id;
-
-  db.query("DELETE FROM skills WHERE id = ?", skillsId, (err, result) => {
-    if (err) {
-      console.error("Error deleting skill:", err);
-      res.status(500).send("Error deleting skill");
-    } else {
-      console.log("Skill deleted successfully");
-      res.status(200).send("Skill deleted successfully");
-    }
-  });
+app.delete("/tool/delete/:id", async (req, res) => {
+  try {
+    const toolId = req.params.id;
+    await promisePool.query("DELETE FROM tool WHERE id = ?", [toolId]);
+    res.status(200).send("Tool deleted successfully");
+  } catch (err) {
+    console.error("Error deleting tool:", err);
+    res.status(500).send("Error deleting tool");
+  }
 });
 
-
-//======================Tech========================================
-app.post("/tool/create", (req, res) => {
-  const { name, toolIcon } = req.body;
-  
-  console.log("Name:", name);
-  console.log("tool Icon:", toolIcon);
-  
-  db.query(
-    "INSERT INTO tool (name, toolIcon) VALUES (?, ?)",
-    [name, toolIcon],
-    (err, result) => {
-      if (err) {
-        console.error("Error inserting data into database:", err);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Data inserted successfully");
-      }
-    }
-  );
+// Type Routes
+app.get("/type", async (req, res) => {
+  try {
+    const [results] = await promisePool.query("SELECT * FROM type");
+    res.json(results);
+  } catch (err) {
+    console.error("Error querying type:", err);
+    res.status(500).send("Error fetching type");
+  }
 });
 
-app.get("/tool", (req, res) => {
-  db.query("SELECT * FROM tool", (err, results) => {
-    if (err) {
-      console.error("Error querying tool:", err);
-      res.status(500).send("Error fetching tool");
-    } else {
-      res.json(results);
-    }
-  });
-});
-
-app.delete("/tool/delete/:id", (req, res) => {
-  const toolId = req.params.id;
-
-  db.query("DELETE FROM tool WHERE id = ?", toolId, (err, result) => {
-    if (err) {
-      console.error("Error deleting tool:", err);
-      res.status(500).send("Error deleting tool");
-    } else {
-      console.log("tool deleted successfully");
-      res.status(200).send("tool deleted successfully");
-    }
-  });
-});
-
-//=====================Type===========================
-app.get("/type", (req, res) => {
-  db.query("SELECT * FROM type", (err, results) => {
-    console.log(results);
-    if (err) {
-      console.error("Error querying tool:", err);
-      res.status(500).send("Error fetching tool");
-    } else {
-      res.json(results);
-    }
-  });
-});
-
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+// Start Server
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

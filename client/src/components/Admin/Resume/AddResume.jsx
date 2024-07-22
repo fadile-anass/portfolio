@@ -4,17 +4,12 @@ import Axios from "axios";
 const AddResume = () => {
     const [name, setName] = useState("");
     const [link, setLink] = useState("");
-    const [pdf,setPdf] = useState(null); // Initialize img state as null
-  
+    const [pdf, setPdf] = useState(null); // Initialize pdf state as null
+
     const handlePdfChange = (event) => {
         setPdf(event.target.files[0]);
     };
-    // const handleImageChange = (event) => {
-    //   Get the file object from the input
-    //   const file = event.target.files[0];
-    //   setImg(file); // Set the file object to the state
-    // };
-  
+
     const handleSubmit = async (event) => {
       event.preventDefault();
       const formData = new FormData();
@@ -23,7 +18,8 @@ const AddResume = () => {
       formData.append('pdf', pdf);
       
       try {
-        await Axios.post("https://portfolio-xqtv.onrender.com/resume/create", formData);
+        // Correctly use the environment variable in the URL
+        await Axios.post(`${process.env.REACT_APP_BACKEND_URI}/resume/create`, formData);
         console.log("Resume added successfully");
         // Optionally, reset the form after successful submission
         setName("");
@@ -41,29 +37,29 @@ const AddResume = () => {
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="form-row">
               <div className="form-group col-md-6">
-                <label htmlFor="inputEmail4">Title</label>
+                <label htmlFor="inputTitle">Title</label>
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="title"
+                  placeholder="Title"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   required
                 />
               </div>
               <div className="form-group col-md-6">
-                <label htmlFor="inputEmail4">Link</label>
+                <label htmlFor="inputLink">Link</label>
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="title"
+                  placeholder="Link"
                   value={link}
                   onChange={(event) => setLink(event.target.value)}
                   required
                 />
               </div>
               <div className="form-group col-md-6">
-                <label htmlFor="inputPassword4">Image</label>
+                <label htmlFor="inputPdf">PDF</label>
                 <input
                   type="file"
                   className="form-control"
@@ -82,6 +78,5 @@ const AddResume = () => {
     </div>
   );
 };
-
 
 export default AddResume;

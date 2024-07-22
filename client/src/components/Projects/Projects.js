@@ -14,7 +14,7 @@ function Projects() {
   }, []);
 
   const showProjects = () => {
-    Axios.get("https://portfolio-xqtv.onrender.com/projects")
+    Axios.get(`${process.env.REACT_APP_BACKEND_URI}/projects`)
       .then((response) => {
         setProjects(response.data); // Update projects state with data from the server
       })

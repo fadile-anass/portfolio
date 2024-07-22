@@ -17,7 +17,7 @@ const Updateproject = () => {
     // Fetch project data when component mounts
     const fetchProjectData = async () => {
       try {
-        const response = await Axios.get(`https://portfolio-xqtv.onrender.com/projects/${id}`);
+        const response = await Axios.get(`${process.env.REACT_APP_BACKEND_URI}/projects/${id}`);
         setProjectData(response.data); // Update projectData state with project details
       } catch (error) {
         console.error("Error fetching project data:", error);
@@ -54,7 +54,7 @@ const Updateproject = () => {
     
     try {
       // Send updated project data to the server for updating
-      await Axios.put(`https://portfolio-xqtv.onrender.com/update/${id}`, formData, {
+      await Axios.put(`${process.env.REACT_APP_BACKEND_URI}/update/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data" // Set content type as multipart/form-data
         }

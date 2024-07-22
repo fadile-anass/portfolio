@@ -9,8 +9,8 @@ function Toolstack() {
   useEffect(() => {
     const fetchIconData = async () => {
       try {
-        const response = await axios.get("https://portfolio-xqtv.onrender.com/tool"); // Fetch icon data from backend
-        setIconsData(response.data); // Set fetched icon data to state
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URI}/tool`);
+        setIconsData(response.data);
       } catch (error) {
         console.error("Error fetching icon data:", error);
       }
@@ -19,20 +19,21 @@ function Toolstack() {
     fetchIconData();
   }, []);
 
-  // Map over iconsData to create the array of icon objects
-  const icons = iconsData.map((iconData, index) => ({
-    component: DiIcons[iconData.toolIcon], // Access the appropriate icon component from DiIcons
-    name: iconData.name
-  }));
+  const icons = iconsData.map((iconData, index) => {
+    const IconComponent = DiIcons[iconData.toolIcon];
+    return {
+      component: IconComponent || DiIcons.DiReact, // Fallback icon if not found
+      name: iconData.name
+    };
+  });
 
   return (
     <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
-      {icons.map((icon, index)=>(
-
+      {icons.map((icon, index) => (
         <Col key={index} xs={4} md={2} className="tech-icons">
-        <icon.component />
-      </Col>
-        ))}
+          <icon.component />
+        </Col>
+      ))}
     </Row>
   );
 }

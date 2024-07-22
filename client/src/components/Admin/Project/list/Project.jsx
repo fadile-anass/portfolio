@@ -18,7 +18,7 @@ const Project = () => {
   }, []);
 
   const showProjects = () => {
-    Axios.get("https://portfolio-xqtv.onrender.com/projects")
+    Axios.get(`${process.env.REACT_APP_BACKEND_URI}/projects`)
       .then((response) => {
         setProjects(response.data); // Update projects state with data from the server
       })
@@ -28,7 +28,7 @@ const Project = () => {
   };
 
   const handleDelete = (projectId) => {
-    Axios.delete(`https://portfolio-xqtv.onrender.com/delete/${projectId}`)
+    Axios.delete(`${process.env.REACT_APP_BACKEND_URI}/delete/${projectId}`)
       .then((response) => {
         console.log("Project deleted successfully");
         setProjects(projects.filter(project => project.id !== projectId));

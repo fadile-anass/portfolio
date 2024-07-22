@@ -18,9 +18,10 @@ const ListResume = () => {
   }, []);
 
   const showResumes = () => {
-    Axios.get("https://portfolio-xqtv.onrender.com/resume")
+    Axios.get(`${process.env.REACT_APP_BACKEND_URI}/resume`)
       .then((response) => {
         setResumes(response.data);
+        console.log(response.data)
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -28,7 +29,7 @@ const ListResume = () => {
   };
 
   const handleDelete = (resumeId) => {
-    Axios.delete(`https://portfolio-xqtv.onrender.com/resume/delete/${resumeId}`)
+    Axios.delete(`${process.env.REACT_APP_BACKEND_URI}/resume/delete/${resumeId}`)
       .then((response) => {
         console.log("ListResume deleted successfully");
         setResumes(resumes.filter(resume => resume.id !== resumeId));
@@ -84,7 +85,7 @@ const ListResume = () => {
 
               
                     <a
-                      href={"https://" +resume.Link}
+                      href={resume.link}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

@@ -7,7 +7,7 @@ function Tool ()  {
     const [icons, setIcons] = useState([]);
 
     const fetchData = () => {
-      fetch('https://portfolio-xqtv.onrender.com/tool')
+      fetch(`${process.env.REACT_APP_BACKEND_URI}/tool`)
           .then(response => response.json())
           .then(data => {
               const fetchedIcons = data.map(icon => ({
@@ -30,7 +30,7 @@ function Tool ()  {
   
     const handleDelete = async (id) => {
       try {
-        await fetch(`https://portfolio-xqtv.onrender.com/tool/delete/${id}`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URI}/tool/delete/${id}`, {
           method: 'DELETE'
         });
         setIcons(icons.filter(icon => icon.id !== id));

@@ -22,7 +22,7 @@ export const Addproject = () => {
       formData.append('img', img);
       
       try {
-        await Axios.post("https://portfolio-xqtv.onrender.com/create", formData);
+        await Axios.post(`${process.env.REACT_APP_BACKEND_URI}/create`, formData);
         console.log("Project added successfully");
         // Optionally, reset the form after successful submission
         setTitle("");

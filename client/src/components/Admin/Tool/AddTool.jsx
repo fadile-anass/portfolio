@@ -9,7 +9,7 @@ const AddTool = () => {
 
     try {
       // Await the Axios request and handle the response
-      const response = await Axios.post("https://portfolio-xqtv.onrender.com/tool/create",{name:name, toolIcon : toolIcon});
+      const response = await Axios.post(`${process.env.REACT_APP_BACKEND_URI}/tool/create`,{name:name, toolIcon : toolIcon});
 
       // Check if the request was successful
       if (response.status === 200) {

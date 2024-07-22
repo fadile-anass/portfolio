@@ -10,7 +10,7 @@ const AddSkills = () => {
 
     try {
       // Await the Axios request and handle the response
-      const response = await Axios.post("https://portfolio-xqtv.onrender.com/skills/create",{name:name, iconName : iconName});
+      const response = await Axios.post(`${process.env.REACT_APP_BACKEND_URI}/skills/create`,{name:name, iconName : iconName});
 
       // Check if the request was successful
       if (response.status === 200) {
