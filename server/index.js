@@ -7,12 +7,12 @@ const multer = require("multer");
 const path = require('path');
 
 // Middleware
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
+app.use(cors());
 app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Database Connection
+// Database Connection  
 const pool = mysql.createPool({
   uri: process.env.mysql_uri,
   waitForConnections: true,
