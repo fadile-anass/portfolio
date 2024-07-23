@@ -4,7 +4,6 @@ const app = express();
 const mysql = require("mysql2");
 const cors = require("cors");
 const multer = require("multer");
-const fs = require('fs');
 const path = require('path');
 
 // Middleware
@@ -22,8 +21,9 @@ const pool = mysql.createPool({
 });
 const promisePool = pool.promise();
 
-// File Upload Configuration
-const upload = multer({ dest: "uploads/" });
+// File Upload Configuration using memory storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Default Route to Render EJS Template
 app.get("/", (req, res) => {
@@ -34,15 +34,12 @@ app.get("/", (req, res) => {
 app.post("/create", upload.single('img'), async (req, res) => {
   try {
     const { title, description, ghlink } = req.body;
-    const imgPath = req.file.path; 
+    const imgData = req.file.buffer; // Image data in memory
 
-    const imgData = fs.readFileSync(imgPath);
-    
     await promisePool.query(
       "INSERT INTO projects (title, description, ghlink, image) VALUES (?, ?, ?, ?)",
       [title, description, ghlink, imgData]
     );
-    fs.unlinkSync(imgPath); // Remove the file after upload
     res.status(200).send("Data inserted successfully");
   } catch (err) {
     console.error("Error inserting data into database:", err);
@@ -94,14 +91,12 @@ app.put("/update/:projectId", upload.single('image'), async (req, res) => {
   try {
     const projectId = req.params.projectId;
     const { title, description, ghLink } = req.body;
-    const imagePath = req.file.path;
+    const imgData = req.file.buffer; // Image data in memory
 
-    const imgData = fs.readFileSync(imagePath);
     await promisePool.query(
       "UPDATE projects SET title = ?, description = ?, ghlink = ?, image = ? WHERE id = ?",
       [title, description, ghLink, imgData, projectId]
     );
-    fs.unlinkSync(imagePath); // Remove the file after upload
     res.status(200).send("Project updated successfully");
   } catch (err) {
     console.error("Error updating project:", err);
@@ -142,11 +137,11 @@ app.get("/resume", async (req, res) => {
 app.post("/resume/create", upload.single('pdf'), async (req, res) => {
   try {
     const { name, link } = req.body;
-    const pdfPath = req.file.path;
+    const pdfData = req.file.buffer; // PDF data in memory
 
     await promisePool.query(
       "INSERT INTO resume (name, link, pdf) VALUES (?, ?, ?)",
-      [name, link, pdfPath]
+      [name, link, pdfData]
     );
     res.status(200).send("Data inserted successfully");
   } catch (err) {
