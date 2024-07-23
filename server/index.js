@@ -7,7 +7,7 @@ const multer = require("multer");
 const path = require('path');
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
