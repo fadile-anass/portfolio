@@ -1,4 +1,4 @@
-require('dotenv').config(); // Add this line at the top of your file
+require('dotenv').config(); // Load environment variables
 const express = require("express");
 const app = express();
 const mysql = require("mysql2");
@@ -8,12 +8,10 @@ const fs = require('fs');
 const path = require('path');
 
 // Middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*', // Allow requests from the URL specified in the .env file
-}));
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json());
-app.set('view engine', 'ejs'); // Set EJS as the templating engine
-app.set('views', path.join(__dirname, 'views')); // Set the directory for EJS templates
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Database Connection
 const pool = mysql.createPool({
@@ -22,7 +20,6 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
-
 const promisePool = pool.promise();
 
 // File Upload Configuration
