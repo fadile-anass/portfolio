@@ -32,6 +32,7 @@
   // Default Route to Render EJS Template
   app.get("/", (req, res) => {
     res.render('index', { message: 'Hello World' });
+    console.log("index page");
   });
 
   // Routes
@@ -245,6 +246,7 @@
     } catch (err) {
       console.error("Error querying type:", err);
       res.status(500).send("Error fetching type");
+      console.log("type page");
     }
   });
 
