@@ -81,17 +81,16 @@ const ListResume = () => {
                 <td>{resume.id}</td>
                 <td>{resume.name}</td>
                 <td>
-                  {/* Check if link is available */}
+  {/* Check if link is available */}
+  <a
+    href={resume.link.startsWith('http') ? resume.link : `https://${resume.link}`}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Link
+  </a>
+</td>
 
-              
-                    <a
-                      href={resume.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Link
-                    </a>
-                </td>
                 <td>
                   <button
                     className="btn btn-primary"

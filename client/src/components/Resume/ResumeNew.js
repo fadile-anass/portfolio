@@ -41,7 +41,8 @@ function ResumeNew() {
             <Row style={{ justifyContent: "center", position: "relative" }}>
               <Button
                 variant="primary"
-                href={resumeItem.link} // Adjusted to resumeItem.link
+                href={resumeItem.link.startsWith('http') ? resumeItem.link : `https://${resumeItem.link}`}
+                // Adjusted to resumeItem.link
                 target="_blank"
                 style={{ maxWidth: "250px" }}
               >
@@ -59,7 +60,8 @@ function ResumeNew() {
             <Row style={{ justifyContent: "center", position: "relative" }}>
               <Button
                 variant="primary"
-                href={resumeItem.link} // Adjusted to resumeItem.link
+                href={resumeItem.link.startsWith('http') ? resumeItem.link : `https://${resumeItem.link}`}
+                // Adjusted to resumeItem.link
                 target="_blank"
                 style={{ maxWidth: "250px" }}
               >
