@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
-import * as DiIcons from "react-icons/di";
 import axios from 'axios';
 
 function Toolstack() {
@@ -19,10 +18,42 @@ function Toolstack() {
     fetchIconData();
   }, []);
 
+  const getIconComponent = (iconName) => {
+    const iconLibrary = iconName.slice(0, 2); // Extract the library prefix (e.g., 'Di', 'Fa', etc.)
+    let IconComponent;
+
+    switch (iconLibrary) {
+      case "Di":
+        IconComponent = require("react-icons/di")[iconName];
+        break;
+      case "Fa":
+        IconComponent = require("react-icons/fa")[iconName];
+        break;
+      case "Ai":
+        IconComponent = require("react-icons/ai")[iconName];
+        break;
+      case "Gi":
+        IconComponent = require("react-icons/gi")[iconName];
+        break;
+      case "Io":
+        IconComponent = require("react-icons/io")[iconName];
+        break;
+      case "Si":
+        IconComponent = require("react-icons/si")[iconName];
+        break;
+
+      default:
+        IconComponent = require("react-icons/di")["DiReact"]; // Fallback icon
+        break;
+    }
+
+    return IconComponent;
+  };
+
   const icons = iconsData.map((iconData, index) => {
-    const IconComponent = DiIcons[iconData.toolIcon];
+    const IconComponent = getIconComponent(iconData.toolIcon);
     return {
-      component: IconComponent || DiIcons.DiReact, // Fallback icon if not found
+      component: IconComponent || getIconComponent("DiReact"), // Fallback icon if not found
       name: iconData.name
     };
   });

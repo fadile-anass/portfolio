@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import axios from "axios";
-import * as DiIcons from "react-icons/di"; // Import all icons from react-icons/di
+
 
 function Techstack() {
   const [iconsData, setIconsData] = useState([]);
@@ -19,10 +19,44 @@ function Techstack() {
     fetchIconData();
   }, []);
 
+  // Function to get the correct icon component based on iconName
+  const getIconComponent = (iconName) => {
+    const iconLibrary = iconName.slice(0, 2); // Extract the library prefix (e.g., 'Di', 'Fa', etc.)
+    let IconComponent;
+
+    switch (iconLibrary) {
+      case "Di":
+        IconComponent = require("react-icons/di")[iconName];
+        break;
+      case "Fa":
+        IconComponent = require("react-icons/fa")[iconName];
+        break;
+      case "Ai":
+        IconComponent = require("react-icons/ai")[iconName];
+        break;
+      case "Gi":
+        IconComponent = require("react-icons/gi")[iconName];
+        break;
+      case "Io":
+        IconComponent = require("react-icons/io")[iconName];
+        break;
+      case "Si":
+        IconComponent = require("react-icons/si")[iconName];
+        break;
+
+      default:
+        IconComponent = require("react-icons/di")["DiReact"]; // Fallback icon
+        break;
+    }
+
+    return IconComponent;
+  };
+
+
   // Map over iconsData to create the array of icon objects
   const icons = iconsData.map((iconData, index) => {
-    // Ensure the component exists in DiIcons
-    const IconComponent = DiIcons[iconData.iconName];
+    // Get the icon component dynamically
+    const IconComponent = getIconComponent(iconData.iconName);
     return {
       component: IconComponent,
       name: iconData.name
