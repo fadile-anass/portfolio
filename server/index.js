@@ -2,13 +2,11 @@ require('dotenv').config(); // Add this line at the top of your file
 const express = require("express");
 const app = express();
 const mysql = require("mysql2");
-const cors = require("cors");
 const multer = require("multer");
 const fs = require('fs');
 const path = require('path');
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Database Connection
