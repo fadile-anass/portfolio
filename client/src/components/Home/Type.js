@@ -18,7 +18,7 @@ function Type() {
     fetchTypeData();
   }, []);
 
-  const types = typeData.map((data) => data.type);
+  const types = typeData.map((data) => data.type || "Unknown");
 
   return (
     <Typewriter
