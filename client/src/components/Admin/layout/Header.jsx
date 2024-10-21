@@ -8,27 +8,27 @@ const Header = () => {
       <header>
         <ul className="nav justify-content-center">
           <li className="nav-item">
-          <Link className="nav-link" to="/admin">
+          <Link className="nav-link" to="/240902">
               Admin
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/admin/project">
+            <Link className="nav-link" to="/240902/project">
               projects
             </Link>
           </li>
           <li className="nav-item">
-          <Link className="nav-link" to="/admin/skills">
+          <Link className="nav-link" to="/240902/skills">
               Skills
             </Link>
           </li>
           <li className="nav-item">
-          <Link className="nav-link" to="/admin/resume">
+          <Link className="nav-link" to="/240902/resume">
               resume
             </Link>
           </li>
           <li className="nav-item">
-          <Link className="nav-link" to="/admin/tool">
+          <Link className="nav-link" to="/240902/tool">
               Tool
             </Link>
           </li>

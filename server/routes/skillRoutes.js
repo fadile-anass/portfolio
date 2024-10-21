@@ -3,7 +3,7 @@ const router = express.Router();
 const skillController = require('../controllers/skillController');
 
 router.get('/', skillController.getAllSkills);
-router.post('/', skillController.createSkill);
-router.delete('/:id', skillController.deleteSkill);
+router.post('/create', skillController.createSkill);
+router.delete('/delete/:id', skillController.deleteSkill);
 
 module.exports = router;

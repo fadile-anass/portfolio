@@ -49,7 +49,7 @@ const Project = () => {
       ghLink: project.ghLink,
       image:project.image,
     });
-    Navigate(`/admin/project/update/${project.id}`);
+    Navigate(`/240902/project/update/${project.id}`);
     console.log(`Modifying project with ID ${project.id}`);
 
   };
@@ -71,7 +71,7 @@ const Project = () => {
           <button className="btn btn-primary" onClick={showProjects}>
             Refresh
           </button>
-          <Link className="btn btn-primary" to="/admin/project/add">
+          <Link className="btn btn-primary" to="/240902/project/add">
             Add
           </Link>
         </div>

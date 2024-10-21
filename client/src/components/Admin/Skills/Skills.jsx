@@ -21,7 +21,7 @@ function Skills() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`${process.env.REACT_APP_BACKEND_URI}/delete/Skills/${id}`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URI}/Skills/delete/${id}`, {
         method: 'DELETE'
       });
       setIcons(icons.filter(icon => icon.id !== id));

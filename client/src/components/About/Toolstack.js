@@ -41,6 +41,9 @@ function Toolstack() {
       case "Si":
         IconComponent = require("react-icons/si")[iconName];
         break;
+      case "tb":
+        IconComponent = require("react-icons/tb")[iconName];
+        break;
 
       default:
         IconComponent = require("react-icons/di")["DiReact"]; // Fallback icon

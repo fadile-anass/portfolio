@@ -9,7 +9,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/admin/*" element={<Admin />} />
+        <Route path="/240902/*" element={<Admin />} />
         <Route path="/*" element={<Client />} />
         <Route path="/test" element={<TestAxios />} />
       </Routes>
