@@ -19,10 +19,10 @@ export const Addproject = () => {
       formData.append('title', title);
       formData.append('description', description);
       formData.append('ghlink', ghlink);
-      formData.append('img', img);
+      formData.append('image', img);
       
       try {
-        await Axios.post(`${process.env.REACT_APP_BACKEND_URI}/create`, formData);
+        await Axios.post(`${process.env.REACT_APP_BACKEND_URI}/projects/create`, formData);
         console.log("Project added successfully");
         // Optionally, reset the form after successful submission
         setTitle("");

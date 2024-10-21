@@ -28,7 +28,7 @@ const Project = () => {
   };
 
   const handleDelete = (projectId) => {
-    Axios.delete(`${process.env.REACT_APP_BACKEND_URI}/delete/${projectId}`)
+    Axios.delete(`${process.env.REACT_APP_BACKEND_URI}/projects/delete/${projectId}`)
       .then((response) => {
         console.log("Project deleted successfully");
         setProjects(projects.filter(project => project.id !== projectId));

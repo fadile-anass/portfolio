@@ -54,7 +54,7 @@ const Updateproject = () => {
     
     try {
       // Send updated project data to the server for updating
-      await Axios.put(`${process.env.REACT_APP_BACKEND_URI}/update/${id}`, formData, {
+      await Axios.put(`${process.env.REACT_APP_BACKEND_URI}/projects/update/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data" // Set content type as multipart/form-data
         }
