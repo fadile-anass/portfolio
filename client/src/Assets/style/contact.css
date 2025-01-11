@@ -1,0 +1,35 @@
+.form-input {
+  opacity: 0.9;
+}
+
+.form-input:focus {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--primary-purple) !important;
+  box-shadow: 0 0 5px rgba(199, 112, 240, 0.3) !important;
+  opacity: 1;
+}
+
+.form-input:hover {
+  border-color: var(--primary-purple) !important;
+  opacity: 1;
+}
+
+.form-input::placeholder {
+  color: #989898 !important;
+}
+
+.purple-button {
+  background-color: #c770f0 !important;
+  border: none !important;
+  cursor: pointer !important;
+  opacity: 0.9;
+}
+
+.purple-button:hover {
+  opacity: 1;
+}
+
+.purple-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
