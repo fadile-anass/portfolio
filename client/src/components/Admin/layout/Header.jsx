@@ -1,41 +1,42 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import "./Header.css";
-import {  Link } from "react-router-dom";
 
 const Header = () => {
-  return (
-    <>
-      <header>
-        <ul className="nav justify-content-center">
-          <li className="nav-item">
-          <Link className="nav-link" to="/240902">
-              Admin
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/240902/project">
-              projects
-            </Link>
-          </li>
-          <li className="nav-item">
-          <Link className="nav-link" to="/240902/skills">
-              Skills
-            </Link>
-          </li>
-          <li className="nav-item">
-          <Link className="nav-link" to="/240902/resume">
-              resume
-            </Link>
-          </li>
-          <li className="nav-item">
-          <Link className="nav-link" to="/240902/tool">
-              Tool
-            </Link>
-          </li>
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  return (
+    <header className="admin-header">
+      <div className="logo">
+        <h1>Admin Dashboard</h1>
+      </div>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/admin/project">Projects</Link>
+          </li>
+          <li>
+            <Link to="/admin/skills">Skills</Link>
+          </li>
+          <li>
+            <Link to="/admin/resume">Resume</Link>
+          </li>
+          <li>
+            <Link to="/admin/tool">Tools</Link>
+          </li>
+          <li>
+            <button onClick={handleLogout} className="logout-btn">Logout</button>
+          </li>
         </ul>
-      </header>
-    </>
+      </nav>
+    </header>
   );
 };
 

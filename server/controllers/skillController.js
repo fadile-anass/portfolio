@@ -4,12 +4,13 @@ exports.createSkill = async (req, res) => {
   try {
     const { name, iconName } = req.body;
     await skillModel.createSkill(name, iconName);
-    res.status(200).send("Skill created successfully");
+    res.status(200).json({ message: "Skill created successfully" });
   } catch (err) {
     console.error("Error creating skill:", err);
-    res.status(500).send("Error creating skill");
+    res.status(500).json({ error: "Error creating skill" });
   }
 };
+
 
 exports.getAllSkills = async (req, res) => {
   try {

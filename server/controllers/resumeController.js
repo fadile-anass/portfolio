@@ -7,12 +7,13 @@ exports.createResume = async (req, res) => {
     const pdfPath = req.file.path;
 
     await resumeModel.createResume(name, link, pdfPath);
-    res.status(200).send("Resume created successfully");
+    res.status(201).json({ message: "Resume created successfully" });
   } catch (err) {
     console.error("Error creating resume:", err);
-    res.status(500).send("Error creating resume");
+    res.status(500).json({ error: "Error creating resume" });
   }
 };
+
 
 exports.getAllResumes = async (req, res) => {
   try {

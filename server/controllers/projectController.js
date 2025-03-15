@@ -9,12 +9,21 @@ exports.createProject = async (req, res) => {
 
     await projectModel.createProject(title, description, ghlink, imgData);
     fs.unlinkSync(imgPath);
-    res.status(200).send("Data inserted successfully");
+    res.status(201).json({
+      success: true,
+      message: "Project created successfully",
+      data: { title, description, ghlink }
+    });
   } catch (err) {
     console.error("Error inserting project:", err);
-    res.status(500).send("Error inserting project");
+    res.status(500).json({
+      success: false,
+      message: "Failed to create project",
+      error: err.message
+    });
   }
 };
+
 
 exports.getAllProjects = async (req, res) => {
   try {
@@ -49,17 +58,37 @@ exports.updateProject = async (req, res) => {
   try {
     const { title, description, ghLink } = req.body;
     const projectId = req.params.projectId;
-    const imgPath = req.file.path;
-    const imgData = fs.readFileSync(imgPath);
 
+    let imgData;
+    if (req.file) {
+      const imgPath = req.file.path;
+      imgData = fs.readFileSync(imgPath);
+      fs.unlinkSync(imgPath);
+    }
+
+    // If no new image is provided, get the existing project to keep the current image
+    if (!imgData) {
+      const [existingProject] = await projectModel.getProjectById(projectId);
+      if (existingProject && existingProject.length > 0) {
+        imgData = existingProject[0].image;
+      }
+    }
     await projectModel.updateProject(projectId, title, description, ghLink, imgData);
-    fs.unlinkSync(imgPath);
-    res.status(200).send("Project updated successfully");
+    res.status(200).json({
+      success: true,
+      message: "Project updated successfully"
+    });
   } catch (err) {
     console.error("Error updating project:", err);
-    res.status(500).send("Error updating project");
+    res.status(500).json({
+      success: false,
+      message: "Error updating project",
+      error: err.message
+    });
   }
 };
+
+
 
 exports.deleteProject = async (req, res) => {
   try {
