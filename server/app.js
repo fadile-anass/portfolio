@@ -14,10 +14,10 @@ const authRoutes = require('./routes/authRoutes');  // Added auth routes import
 
 // Middleware
 app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));app.use(express.json());
+  origin: ['http://localhost:3000', 'https://www.fadile.site'],
+  credentials: true
+}));
+app.use(express.json());
 
 // Routes Middleware
 app.use('/projects', projectRoutes);
