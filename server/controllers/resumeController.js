@@ -2,21 +2,37 @@ const resumeModel = require('../models/resumeModel');
 const fs = require('fs');
 const path = require('path');
 
+// Determine if we're in a serverless environment
+const isServerless = process.env.NODE_ENV === 'production' || process.env.AWS_LAMBDA_FUNCTION_NAME;
+
 exports.createResume = async (req, res) => {
   try {
     const { name, link } = req.body;
     
-    // Store relative path from project root
-    const pdfPath = req.file.path.replace(/\\/g, '/');
-
-    await resumeModel.createResume(name, link, pdfPath);
-    res.status(201).json({ message: "Resume created successfully" });
+    // Store the file path
+    let pdfPath = req.file.path.replace(/\\/g, '/');
+    
+    // For serverless environments, we need to read the file and store its content in the database
+    if (isServerless) {
+      try {
+        const pdfData = fs.readFileSync(pdfPath);
+        // Store the binary data directly in the database
+        await resumeModel.createResumeWithBinary(name, link, pdfData);
+        res.status(201).json({ message: "Resume created successfully" });
+      } catch (fileErr) {
+        console.error("Error reading uploaded PDF:", fileErr);
+        res.status(500).json({ error: "Error processing uploaded PDF" });
+      }
+    } else {
+      // For non-serverless environments, store the path
+      await resumeModel.createResume(name, link, pdfPath);
+      res.status(201).json({ message: "Resume created successfully" });
+    }
   } catch (err) {
     console.error("Error creating resume:", err);
     res.status(500).json({ error: "Error creating resume", details: err.message });
   }
 };
-
 
 exports.getAllResumes = async (req, res) => {
   try {
@@ -30,6 +46,12 @@ exports.getAllResumes = async (req, res) => {
         
         // If pdf is a string (file path), try to read the file
         if (typeof resume.pdf === 'string') {
+          // In serverless environments, the file might not exist anymore
+          if (isServerless) {
+            console.log("Serverless environment detected, PDF path may not be accessible");
+            return { ...resume, pdf: null };
+          }
+          
           const pdfPath = path.join(process.cwd(), resume.pdf);
           
           if (fs.existsSync(pdfPath)) {
@@ -54,8 +76,6 @@ exports.getAllResumes = async (req, res) => {
     res.status(500).json({ error: "Error retrieving resumes", details: err.message });
   }
 };
-
-
 
 exports.deleteResume = async (req, res) => {
   try {
