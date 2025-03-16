@@ -24,15 +24,22 @@ export const AuthProvider = ({ children }) => {
         // Set default headers for all axios requests
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         
-        // You can add a verify token endpoint to check if token is valid
-        // const response = await axios.get("/api/auth/verify");
-        // setIsAuthenticated(response.data.isValid);
+        // Verify token validity by making a request to a protected endpoint
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URI}/auth/verify-token`);
         
-        // For now, we'll just assume the token is valid if it exists
-        setIsAuthenticated(true);
+        if (response.data.valid) {
+          setIsAuthenticated(true);
+        } else {
+          // Token is invalid or expired
+          localStorage.removeItem("token");
+          delete axios.defaults.headers.common["Authorization"];
+          setIsAuthenticated(false);
+        }
       } catch (error) {
         console.error("Authentication error:", error);
+        // If there's an error (like 401 Unauthorized), clear the token
         localStorage.removeItem("token");
+        delete axios.defaults.headers.common["Authorization"];
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);

@@ -72,16 +72,16 @@ exports.login = async (req, res) => {
     
     console.log("Password verified successfully");
     
-    // Check if jwt_secret is defined - using lowercase to match .env file
-    if (!process.env.jwt_secret) {
-      console.error("jwt_secret is not defined in environment variables");
-      return res.status(500).json({ message: "Server configuration error" });
-    }
+// Check if JWT_SECRET is defined - using uppercase to match middleware
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET is not defined in environment variables");
+  return res.status(500).json({ message: "Server configuration error" });
+}
 
     // Generate JWT token - using lowercase jwt_secret to match .env file
     console.log("Generating JWT token...");
-    const token = jwt.sign({ id: user.id }, process.env.jwt_secret, { expiresIn: "1h" });
-    console.log("Login successful for user:", username);
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+            console.log("Login successful for user:", username);
 
     res.json({ token });
   } catch (err) {
@@ -90,3 +90,13 @@ exports.login = async (req, res) => {
   }
 };
   
+exports.verifyToken = (req, res) => {
+  try {
+    // The token is already verified by the authMiddleware
+    // If execution reaches here, the token is valid
+    return res.status(200).json({ valid: true });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    return res.status(401).json({ valid: false });
+  }
+};
