@@ -1,15 +1,24 @@
-require('dotenv').config();
-const express = require("express");
+const fs = require('fs');
+const resumeRoutes = require('./routes/resumeRoutes');
 const cors = require("cors");
+const toolRoutes = require('./routes/toolRoutes');
 const path = require('path');
+const skillRoutes = require('./routes/skillRoutes');
+const projectRoutes = require('./routes/projectRoutes');
+const express = require("express");
+const typeRoutes = require('./routes/typeRoutes');
+require('dotenv').config();
+
+// Check for required dependencies
+try {
+  require('./ensure-dependencies');
+} catch (error) {
+  console.error('Error ensuring dependencies:', error);
+}
+
 const app = express();
 
 // Import Routes
-const projectRoutes = require('./routes/projectRoutes');
-const resumeRoutes = require('./routes/resumeRoutes');
-const skillRoutes = require('./routes/skillRoutes');
-const toolRoutes = require('./routes/toolRoutes');
-const typeRoutes = require('./routes/typeRoutes');
 const authRoutes = require('./routes/authRoutes');  // Added auth routes import
 
 // Middleware
@@ -28,19 +37,17 @@ app.use('/tool', toolRoutes);
 app.use('/type', typeRoutes);
 
 // Create uploads directory if it doesn't exist
-const fs = require('fs');
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+  // redacted
 }
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+  // redacted
 });
 // Start Server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  // redacted
 });

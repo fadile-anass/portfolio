@@ -2,42 +2,33 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// Check if xtend is properly installed
-const xtendPath = path.join(__dirname, 'node_modules', 'xtend');
-if (!fs.existsSync(xtendPath)) {
-  console.log('Installing missing xtend dependency...');
-  try {
-    execSync('npm install xtend@4.0.2 --save', { stdio: 'inherit' });
-    console.log('xtend installed successfully!');
-  } catch (error) {
-    console.error('Failed to install xtend:', error);
+// List of dependencies required by multer
+const dependencies = [
+  { name: 'xtend', version: '4.0.2' },
+  { name: 'append-field', version: '1.0.0' },
+  { name: 'busboy', version: '1.6.0' },
+  { name: 'concat-stream', version: '1.6.2' },
+  { name: 'mkdirp', version: '0.5.6' },
+  { name: 'object-assign', version: '4.1.1' },
+  { name: 'type-is', version: '1.6.18' },
+  { name: 'streamsearch', version: '1.1.0' }
+];
+
+// Check and install missing dependencies
+dependencies.forEach(dep => {
+  const depPath = path.join(__dirname, 'node_modules', dep.name);
+  
+  if (!fs.existsSync(depPath)) {
+    console.log(`Installing missing dependency: ${dep.name}@${dep.version}`);
+    try {
+      execSync(`npm install ${dep.name}@${dep.version} --no-save`, { stdio: 'inherit' });
+      console.log(`${dep.name} installed successfully!`);
+    } catch (error) {
+      console.error(`Failed to install ${dep.name}:`, error);
+    }
+  } else {
+    console.log(`${dep.name} is already installed.`);
   }
-} else {
-  console.log('xtend is already installed.');
-}
+});
 
-// Check if multer is properly installed
-const multerPath = path.join(__dirname, 'node_modules', 'multer');
-if (!fs.existsSync(multerPath)) {
-  console.log('Installing missing multer dependency...');
-  try {
-    execSync('npm install multer@1.4.5-lts.1 --save', { stdio: 'inherit' });
-    console.log('multer installed successfully!');
-  } catch (error) {
-    console.error('Failed to install multer:', error);
-  }
-} else {
-  console.log('multer is already installed.');
-}
-
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  console.log('Creating uploads directory...');
-  fs.mkdirSync(uploadsDir, { recursive: true });
-  console.log('uploads directory created successfully!');
-} else {
-  console.log('uploads directory already exists.');
-}
-
-console.log('Dependency check completed.');
+console.log('All dependencies checked and installed if needed.');
