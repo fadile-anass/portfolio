@@ -11,7 +11,7 @@ require('dotenv').config();
 
 // Check for required dependencies
 try {
-  require('./ensure-dependencies');
+  require('./fix-dependencies.js');
 } catch (error) {
   console.error('Error ensuring dependencies:', error);
 }
