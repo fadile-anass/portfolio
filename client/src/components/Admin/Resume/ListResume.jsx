@@ -62,12 +62,49 @@ const ListResume = () => {
 
 
   const handlePdfClick = (pdfData, name) => {
-    // Convert binary data to base64 string
-    const pdfBase64 = arrayBufferToBase64(pdfData.data);
-    setSelectedPdf(`data:application/pdf;base64,${pdfBase64}`);
-    setSelectedResumeName(name);
-    setPageNumber(1);
-    setShowModal(true);
+    // Check if pdfData is a Buffer containing a file path
+    if (pdfData && pdfData.data) {
+      try {
+        // First try to interpret as a file path in Buffer format
+        const filePath = bufferToString(pdfData.data);
+        
+        // Check if it looks like a file path
+        if (filePath.includes('uploads') || filePath.includes('\\') || filePath.includes('/')) {
+          // Extract the filename from the path
+          const fileName = filePath.split(/[\\\/]/).pop();
+          // Create a URL to the PDF file on the server
+          const pdfUrl = `${process.env.REACT_APP_BACKEND_URI}/uploads/${fileName}`;
+          
+          // Set the URL to fetch the PDF
+          setSelectedPdf(pdfUrl);
+          setSelectedResumeName(name);
+          setPageNumber(1);
+          setShowModal(true);
+          return;
+        }
+      } catch (err) {
+        console.error("Error processing file path:", err);
+      }
+      
+      // If not a file path or error occurred, try to use as binary data
+      try {
+        const pdfBase64 = arrayBufferToBase64(pdfData.data);
+        setSelectedPdf(`data:application/pdf;base64,${pdfBase64}`);
+        setSelectedResumeName(name);
+        setPageNumber(1);
+        setShowModal(true);
+      } catch (err) {
+        console.error("Error processing PDF data:", err);
+        setError("Failed to load PDF preview. The file may be corrupted.");
+      }
+    } else {
+      setError("No PDF data available for preview.");
+    }
+  };
+  
+  // Helper function to convert buffer to string
+  const bufferToString = (buffer) => {
+    return String.fromCharCode.apply(null, buffer);
   };
 
   // Helper function to convert array buffer to base64

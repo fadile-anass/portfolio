@@ -27,13 +27,20 @@ function ResumeNew() {
           // Get the first resume (since we're only allowing one)
           const resume = response.data[0];
           
-          // Convert binary PDF data to base64 string for react-pdf
-          const base64Pdf = `data:application/pdf;base64,${arrayBufferToBase64(resume.pdf.data)}`;
+          // Check if we have a file path or binary data
+          let pdfUrl;
+          if (resume.pdf && resume.pdf.data) {
+            // Convert Buffer data to string to get the file path
+            const filePath = bufferToString(resume.pdf.data);
+            
+            // Create a URL to the PDF file on the server
+            pdfUrl = `${process.env.REACT_APP_BACKEND_URI || ""}/uploads/${filePath.split('\\').pop()}`;
+          }
           
           setResumeData({
-            name: resume.name,
-            link: resume.link,
-            pdfData: base64Pdf
+            name: resume.name || "Resume",
+            link: resume.link || "",
+            pdfData: pdfUrl || defaultPdf
           });
         } else {
           // Use default resume if none found in database
@@ -61,7 +68,12 @@ function ResumeNew() {
     fetchResume();
   }, []);
 
-  // Helper function to convert array buffer to base64
+  // Helper function to convert buffer to string
+  const bufferToString = (buffer) => {
+    return String.fromCharCode.apply(null, buffer);
+  };
+
+  // Helper function to convert array buffer to base64 (kept for reference)
   const arrayBufferToBase64 = (buffer) => {
     let binary = '';
     const bytes = new Uint8Array(buffer);
