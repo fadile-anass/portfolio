@@ -5,13 +5,15 @@ const path = require('path');
 exports.createResume = async (req, res) => {
   try {
     const { name, link } = req.body;
-    const pdfPath = req.file.path;
+    
+    // Store relative path from project root
+    const pdfPath = req.file.path.replace(/\\/g, '/');
 
     await resumeModel.createResume(name, link, pdfPath);
     res.status(201).json({ message: "Resume created successfully" });
   } catch (err) {
     console.error("Error creating resume:", err);
-    res.status(500).json({ error: "Error creating resume" });
+    res.status(500).json({ error: "Error creating resume", details: err.message });
   }
 };
 
@@ -21,20 +23,28 @@ exports.getAllResumes = async (req, res) => {
     const [results] = await resumeModel.getAllResumes();
     const resumes = results.map(resume => {
       try {
-        // Use path.join with __dirname to create an absolute path relative to the server
-        const pdfPath = path.join(process.cwd(), resume.pdf);
+        // Check if pdf is already binary data (Buffer)
+        if (resume.pdf && Buffer.isBuffer(resume.pdf)) {
+          return resume; // Already has binary data, no need to read file
+        }
         
-        // Check if file exists before trying to read it
-        if (fs.existsSync(pdfPath)) {
-          const pdfData = fs.readFileSync(pdfPath);
-          return { ...resume, pdf: pdfData };
+        // If pdf is a string (file path), try to read the file
+        if (typeof resume.pdf === 'string') {
+          const pdfPath = path.join(process.cwd(), resume.pdf);
+          
+          if (fs.existsSync(pdfPath)) {
+            const pdfData = fs.readFileSync(pdfPath);
+            return { ...resume, pdf: pdfData };
+          } else {
+            console.error(`PDF file not found at ${pdfPath}`);
+            return { ...resume, pdf: null, debugPath: pdfPath, originalPath: resume.pdf };
+          }
         } else {
-          console.error(`PDF file not found at ${pdfPath}`);
-          // Return the path for debugging
-          return { ...resume, pdf: null, debugPath: pdfPath, originalPath: resume.pdf };
+          console.error(`Invalid PDF data type: ${typeof resume.pdf}`);
+          return { ...resume, pdf: null };
         }
       } catch (fileErr) {
-        console.error(`Error reading PDF file at ${resume.pdf}:`, fileErr);
+        console.error(`Error processing PDF for resume ${resume.id}:`, fileErr);
         return { ...resume, pdf: null, error: fileErr.message };
       }
     });
