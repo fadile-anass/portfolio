@@ -9,7 +9,8 @@
     "dev": "nodemon app.js",
     "build": "node prepare-deployment.js",
     "fix-deps": "node fix-dependencies.js",
-    "prestart": "node fix-dependencies.js"
+    "prestart": "node fix-dependencies.js",
+    "postinstall": "npm install xtend@4.0.2 --no-save && npm install append-field busboy concat-stream mkdirp object-assign type-is streamsearch --no-save"
   },
   "author": "",
   "license": "ISC",
