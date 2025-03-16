@@ -15,18 +15,25 @@
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.44.4",
+    "append-field": "^1.0.0",
     "bcryptjs": "^2.4.3",
+    "busboy": "^1.6.0",
+    "concat-stream": "^1.6.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-validator": "^7.0.1",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
+    "mkdirp": "^0.5.6",
     "mongoose": "^8.5.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.9.2",
     "nodemon": "^3.1.9",
+    "object-assign": "^4.1.1",
     "pg": "^8.12.0",
+    "streamsearch": "^1.1.0",
+    "type-is": "^1.6.18",
     "xtend": "^4.0.2"
   }
 }
