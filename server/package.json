@@ -5,8 +5,12 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
-    "build": "echo 'No build step defined'"
+    "start": "node app.js",
+    "dev": "node app.js",
+    "build": "echo 'No build step defined'",
+
+    "fix-deps": "node fix-dependencies.js",
+    "prestart": "node fix-dependencies.js"
   },
   "author": "",
   "license": "ISC",
