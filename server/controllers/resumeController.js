@@ -19,29 +19,17 @@ exports.getAllResumes = async (req, res) => {
   try {
     const [results] = await resumeModel.getAllResumes();
     const resumes = results.map(resume => {
-      try {
-        // Normalize the file path to work across different operating systems
-        const normalizedPath = path.resolve(resume.pdf.replace(/\\/g, path.sep));
-        
-        // Check if file exists before trying to read it
-        if (fs.existsSync(normalizedPath)) {
-          const pdfData = fs.readFileSync(normalizedPath);
-          return { ...resume, pdf: pdfData };
-        } else {
-          console.error(`PDF file not found at ${normalizedPath}`);
-          return { ...resume, pdf: null };
-        }
-      } catch (fileErr) {
-        console.error(`Error reading PDF file at ${resume.pdf}:`, fileErr);
-        return { ...resume, pdf: null };
-      }
+      const pdfData = fs.readFileSync(resume.pdf);
+      return { ...resume, pdf: pdfData };
     });
     res.json(resumes);
   } catch (err) {
     console.error("Error retrieving resumes:", err);
-    res.status(500).json({ error: "Error retrieving resumes" });
+    res.status(500).send("Error retrieving resumes");
   }
 };
+
+
 
 exports.deleteResume = async (req, res) => {
   try {

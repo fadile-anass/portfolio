@@ -37,25 +37,34 @@ export const Addproject = () => {
       setLoading(true);
       setError(null);
       setSuccess(false);
-      
+
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
       formData.append('ghlink', ghlink);
       formData.append('image', img);
-      
+
       try {
-        await Axios.post(`${process.env.REACT_APP_BACKEND_URI}/projects/create`, formData);
+        const token = localStorage.getItem('token');
+        await Axios.post(
+          `${process.env.REACT_APP_BACKEND_URI}/projects/create`, 
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
         setSuccess(true);
         setLoading(false);
-        
+
         // Reset form after successful submission
         setTitle("");
         setDescription("");
         setGhlink("");
         setImg(null);
         setPreviewUrl(null);
-        
+
         // Redirect to projects list after 2 seconds
         setTimeout(() => {
           navigate("/admin/project");
@@ -66,6 +75,7 @@ export const Addproject = () => {
         setLoading(false);
       }
     };
+
 
     const handleCancel = () => {
       navigate("/admin/project");

@@ -19,10 +19,13 @@ const AddSkills = () => {
     setSuccess(false);
 
     try {
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
       // Await the Axios request and handle the response
       const response = await Axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/skills/create`,
-        { name: name, iconName: iconName }
+        { name: name, iconName: iconName },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       // Check if the request was successful
@@ -43,6 +46,7 @@ const AddSkills = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <Container className="skills-container py-4">

@@ -46,8 +46,13 @@ const Project = () => {
 
   const handleDelete = () => {
     const projectId = deleteConfirmation.projectId;
-    
-    Axios.delete(`${process.env.REACT_APP_BACKEND_URI}/projects/delete/${projectId}`)
+    const token = localStorage.getItem('token');
+
+    Axios.delete(`${process.env.REACT_APP_BACKEND_URI}/projects/delete/${projectId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then((response) => {
         setProjects(projects.filter(project => project.id !== projectId));
         setDeleteConfirmation({ show: false, projectId: null });
@@ -60,6 +65,7 @@ const Project = () => {
         showNotification("Failed to delete project", "danger");
       });
   };
+
 
   const handleModify = (project) => {
     setUpdateData({

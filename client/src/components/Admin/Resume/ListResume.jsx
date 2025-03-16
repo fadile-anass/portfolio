@@ -38,7 +38,16 @@ const ListResume = () => {
 
   const handleDelete = (resumeId) => {
     setLoading(true);
-    Axios.delete(`${process.env.REACT_APP_BACKEND_URI}/resume/${resumeId}`)
+    // Get the token from localStorage
+    const token = localStorage.getItem('token');
+    
+    Axios.delete(`${process.env.REACT_APP_BACKEND_URI}/resume/${resumeId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      
+      }
+    })
       .then(() => {
         setResumes(resumes.filter(resume => resume.id !== resumeId));
         setDeleteConfirmation(null);
@@ -50,6 +59,7 @@ const ListResume = () => {
         setLoading(false);
       });
   };
+
 
   const handlePdfClick = (pdfData, name) => {
     // Convert binary data to base64 string

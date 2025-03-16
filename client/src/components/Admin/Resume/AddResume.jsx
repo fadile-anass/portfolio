@@ -40,10 +40,12 @@ const AddResume = () => {
         formData.append('name', name);
         formData.append('link', link);
         formData.append('pdf', pdf);
-        
+        const token = localStorage.getItem('token');
+
         try {
             await Axios.post(`${process.env.REACT_APP_BACKEND_URI}/resume`, formData, {
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });

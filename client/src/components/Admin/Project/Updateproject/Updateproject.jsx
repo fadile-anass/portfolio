@@ -78,27 +78,29 @@ const Updateproject = () => {
     setLoading(true);
     setError(null);
     setSuccess(false);
-    
+
     const formData = new FormData();
     formData.append("title", projectData.title);
     formData.append("description", projectData.description);
     formData.append("ghLink", projectData.ghLink);
-    
+
     // Only append image if a new one was selected
     if (projectData.image instanceof File) {
       formData.append("image", projectData.image);
     }
-    
+
     try {
+      const token = localStorage.getItem('token');
       await Axios.put(`${process.env.REACT_APP_BACKEND_URI}/projects/update/${id}`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`
         }
       });
-      
+
       setSuccess(true);
       setLoading(false);
-      
+
       // Redirect to projects list after 2 seconds
       setTimeout(() => {
         navigate("/admin/project");
@@ -109,6 +111,7 @@ const Updateproject = () => {
       setLoading(false);
     }
   };
+
 
   const handleCancel = () => {
     navigate("/admin/project");
