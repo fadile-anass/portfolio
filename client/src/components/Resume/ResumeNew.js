@@ -96,11 +96,6 @@ function ResumeNew() {
           </div>
         ) : resumeData ? (
           <>
-            {usingDefaultResume && (
-              <Alert variant="info" className="text-center mb-4">
-                Using default resume. No custom resume found in database.
-              </Alert>
-            )}
             
             <Row style={{ justifyContent: "center", position: "relative" }}>
               <Button
