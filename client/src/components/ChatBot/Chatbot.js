@@ -7,6 +7,7 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   // Load chat history from localStorage when component mounts
   useEffect(() => {
@@ -18,7 +19,8 @@ const Chatbot = () => {
       setMessages([
         { role: 'assistant', content: 'Hi there! I\'m the AI version of Fadile Anass. Feel free to ask me anything about my skills, projects, or experience!' }
       ]);
-    }
+    };
+    
   }, []);
 
   // Save messages to localStorage whenever they change
@@ -34,9 +36,26 @@ const Chatbot = () => {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+  useEffect(() => {
+    // Show tooltip after a short delay when component mounts
+    const tooltipTimer = setTimeout(() => {
+      setShowTooltip(true);
+    }, 1000);
+
+    // Hide tooltip after 5 seconds
+    const hideTooltipTimer = setTimeout(() => {
+      setShowTooltip(false);
+    }, 6000);
+
+    return () => {
+      clearTimeout(tooltipTimer);
+      clearTimeout(hideTooltipTimer);
+    };
+  }, []);
 
   const toggleChatbot = () => {
     setIsOpen(!isOpen);
+    setShowTooltip(false);  // Hide tooltip when chat is opened
   };
 
   const handleInputChange = (e) => {
@@ -74,10 +93,14 @@ const Chatbot = () => {
     }
   };
 
-  // Modified to include conversation history in API call
+  // Modified to include conversation history in API call - Using Grok API
   const fetchAIResponse = async (userMessage, conversationHistory) => {
-    const apiUrl = process.env.REACT_APP_AI_API_URL;
-    const apiKey = process.env.REACT_APP_AI_API_KEY;
+    const apiKey = process.env.REACT_APP_GROK_API_KEY;
+    const apiUrl = 'https://api.x.ai/v1/chat/completions';
+    
+    if (!apiKey) {
+      throw new Error('Grok API key is not configured. Please set REACT_APP_GROK_API_KEY environment variable.');
+    }
     
     // Import your system prompt
     const systemPrompt = await import('../../utils/systemPrompt').then(module => module.default);
@@ -100,17 +123,18 @@ const Chatbot = () => {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini", // or whichever model you're using
+        model: 'grok-4-1-fast',
         messages: apiMessages,
         max_tokens: 500,
-        temperature: 0.7
+        temperature: 0.7,
+        stream: false
       })
     });
   
     const data = await response.json();
     
     if (!response.ok) {
-      throw new Error(data.error?.message || 'Failed to fetch AI response');
+      throw new Error(data.error?.message || 'Failed to fetch AI response from Grok');
     }
     
     return data.choices[0].message.content;
@@ -126,22 +150,24 @@ const Chatbot = () => {
 
   return (
     <div className="chatbot-container">
-      {/* Chatbot toggle button */}
-      <button 
-        className="chatbot-toggle"
-        onClick={toggleChatbot}
-        aria-label={isOpen ? "Close chat" : "Open chat"}
-      >
-        {isOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-          </svg>
-        )}
-      </button>
+    <button 
+      className="chatbot-toggle"
+      onClick={toggleChatbot}
+      aria-label={isOpen ? "Close chat" : "Open chat"}
+    >
+      {isOpen ? (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      ) : (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      )}
+      <div className={`chatbot-tooltip ${showTooltip ? 'show' : ''}`}>
+        Chat with me!
+      </div>
+    </button>
 
       {/* Chatbot dialog */}
       {isOpen && (
