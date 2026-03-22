@@ -3,24 +3,31 @@ import { Container, Row, Col } from "react-bootstrap";
 import ProjectCard from "./ProjectCards";
 import Particle from "../Particle";
 import Axios from "axios";
-import chatify from "../../Assets/Projects/chatify.png"; // Import default project image
+import chatify from "../../Assets/Projects/chatify.png";
+import ImageModal from "./ImageModal"; // Import the new ImageModal component
 
 function Projects() {
-  const [projects, setProjects] = useState([]); // State to hold projects data
+  const [projects, setProjects] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
-    // Fetch projects data when the component mounts
     showProjects();
   }, []);
 
   const showProjects = () => {
     Axios.get(`${process.env.REACT_APP_BACKEND_URI}/projects`)
       .then((response) => {
-        setProjects(response.data); // Update projects state with data from the server
+        setProjects(response.data);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
   };
 
   return (
@@ -37,18 +44,23 @@ function Projects() {
           {projects.map((project) => (
             <Col key={project.id} md={4} className="project-card">
               <ProjectCard
-                imgPath={project.image ? `data:image/jpeg;base64,${project.image}` : chatify} // Use a default image path if project.image doesn't exist
+                imgPath={project.image ? `data:image/jpeg;base64,${project.image}` : chatify}
                 isBlog={false}
                 title={project.title}
                 description={project.description}
                 ghLink={project.ghLink}
-                // If demoLink exists, pass it as a prop; otherwise, don't include it
-
+                demoLink={project.demoLink}
+                onImageClick={() => handleImageClick(project.image ? `data:image/jpeg;base64,${project.image}` : chatify)}
               />
             </Col>
           ))}
         </Row>
       </Container>
+      <ImageModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        imageUrl={selectedImage}
+      />
     </Container>
   );
 }

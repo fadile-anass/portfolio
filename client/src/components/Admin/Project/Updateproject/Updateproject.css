@@ -164,7 +164,7 @@
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .row {
-      flex-direction: column-reverse;
+      /* flex-direction: column-reverse; */
     }
     
     .image-upload-container {

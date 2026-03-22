@@ -14,6 +14,50 @@ html {
   --imp-text-color: #c770f0;
 }
 
+.experience-card {
+  padding-top: 50px !important;
+  padding-bottom: 50px !important;
+  padding-left: 25px !important;
+  padding-right: 25px !important;
+  height: auto !important;
+  background-color: transparent !important;
+  opacity: 0.9 !important;
+  border-color: rgba(200, 137, 230, 0.637) !important;
+  color: white !important;
+  transition: all 0.5s ease 0s !important;
+}
+
+.experience-card:hover {
+  transform: scale(1.05) !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 4px 5px rgba(129, 72, 144, 0.561) !important;
+}
+.experience-section .carousel-control-prev,
+.experience-section .carousel-control-next {
+  width: 5%;
+}
+
+.experience-section .carousel-inner {
+  height: 400px; /* Adjust this value as needed */
+}
+
+.experience-section .carousel-item {
+  height: 100%;
+}
+
+.experience-section .experience-card {
+  height: 100%;
+}
+
+.experience-section .card-body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.experience-section .card-text {
+  max-height: 200px; /* Adjust this value as needed */
+  overflow-y: auto;
+}
 .purple {
   color: var(--imp-text-color) !important;
 }
@@ -460,17 +504,126 @@ button:focus {
 }
 
 .project-card-view {
-  box-shadow: 0 4px 5px 3px rgba(119, 53, 136, 0.459) !important;
+  background-color: #1a1a2e !important;
   color: white !important;
-  background-color: transparent !important;
-  opacity: 0.9 !important;
-  transition: all 0.5s ease 0s !important;
+  border: none !important;
+  border-radius: 15px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s ease !important;
   height: 100% !important;
-}
-.project-card-view:hover {
-  transform: scale(1.02) !important;
   overflow: hidden !important;
-  box-shadow: 0 4px 4px 5px rgba(129, 72, 144, 0.561) !important;
+}
+
+.project-card-view:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.project-card-img-container {
+  position: relative;
+  overflow: hidden;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+/* In your style.css or a new CSS file */
+.project-card-view .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.project-card-view .card-img-top:hover {
+  transform: scale(1.05);
+}
+
+.modal-content {
+  background-color: transparent;
+  border: none;
+}
+
+.modal-body {
+  padding: 0;
+}
+
+.modal-body img {
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+.project-card-view .card-img-top {
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-card-view:hover .card-img-top {
+  transform: scale(1.1);
+}
+
+.project-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+  display: flex;
+  align-items: flex-end;
+  padding: 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card-view:hover .project-card-overlay {
+  opacity: 1;
+}
+
+.project-card-rating {
+  font-size: 1.2em;
+}
+
+.project-card-view .card-body {
+  padding: 20px;
+}
+
+.project-card-view .card-title {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.project-card-view .card-text {
+  font-size: 0.9em;
+  color: #cccccc;
+  margin-bottom: 20px;
+}
+
+.project-card-links {
+  display: flex;
+  justify-content: space-between;
+}
+
+.project-card-links .btn {
+  padding: 8px 15px;
+  font-size: 0.9em;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.project-card-links .btn-primary {
+  background-color: #4a4e69;
+  border-color: #4a4e69;
+}
+
+.project-card-links .btn-secondary {
+  background-color: #22223b;
+  border-color: #22223b;
+}
+
+.project-card-links .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.project-card-links .btn svg {
+  margin-right: 5px;
 }
 
 .blog-card {
@@ -559,11 +712,12 @@ button:focus {
   vertical-align: middle !important;
   text-align: center !important;
   border-radius: 5px !important;
-  display: table !important;
+  /* display: table !important; REMOVE THIS */
   box-shadow: 4px 5px 4px 3px rgba(89, 4, 168, 0.137) !important;
   overflow: hidden !important;
   transition: all 0.4s ease 0s !important;
 }
+
 
 @media (max-width: 767px) {
   .tech-icons {

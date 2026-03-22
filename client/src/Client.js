@@ -7,7 +7,7 @@ import Projects from "./components/Projects/Projects";
 import Footer from "./components/Footer";
 import Resume from "./components/Resume/ResumeNew";
 import Chatbot from "./components/ChatBot/Chatbot"
-
+import ImageGenerator from "./components/ImageGenerator/ImageGenerator"; // Add this import
 
 import {
   BrowserRouter as Router,
@@ -41,10 +41,9 @@ function Client() {
           <Route path="/project" element={<Projects />} />
           <Route path="/about" element={<About />} />
           <Route path="/resume" element={<Resume />} />
+          <Route path="/generate-image" element={<ImageGenerator />} /> {/* Add this new route */}
 
           {/* <Route path="*" element={<Navigate to="/"/>} /> */}
-          
-          
         </Routes>
         <Footer />
         <Chatbot/>
