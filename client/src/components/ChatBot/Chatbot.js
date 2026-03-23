@@ -92,6 +92,7 @@ const Chatbot = () => {
       sendMessage();
     }
   };
+  
 
   // Modified to include conversation history in API call - Using Grok API
   const fetchAIResponse = async (userMessage, conversationHistory) => {
