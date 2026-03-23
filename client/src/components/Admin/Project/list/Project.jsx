@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Project.css";
 import Axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Modal, Button, Spinner, Card, Badge } from "react-bootstrap";
+import { Modal, Button, Spinner, Card } from "react-bootstrap";
 import ImageModal from "../../layout/ImageModal";
 import { FaGithub, FaEdit, FaTrash, FaEye, FaSync, FaPlus } from "react-icons/fa";
 
@@ -10,7 +10,6 @@ const Project = () => {
   const [projects, setProjects] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [updateData, setUpdateData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, projectId: null });
@@ -68,13 +67,6 @@ const Project = () => {
 
 
   const handleModify = (project) => {
-    setUpdateData({
-      id: project.id,
-      title: project.title,
-      description: project.description,
-      ghLink: project.ghLink,
-      image: project.image,
-    });
     Navigate(`/admin/project/update/${project.id}`);
   };
 

@@ -14,8 +14,6 @@ function ResumeNew() {
   const [width, setWidth] = useState(1200);
   const [resumeData, setResumeData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [usingDefaultResume, setUsingDefaultResume] = useState(false);
 
   useEffect(() => {
     setWidth(window.innerWidth);
@@ -44,7 +42,6 @@ function ResumeNew() {
           });
         } else {
           // Use default resume if none found in database
-          setUsingDefaultResume(true);
           setResumeData({
             name: "FADILE_ANASS",
             link: defaultPdf,
@@ -54,7 +51,6 @@ function ResumeNew() {
       } catch (err) {
         console.error("Error fetching resume:", err);
         // Use default resume on error
-        setUsingDefaultResume(true);
         setResumeData({
           name: "FADILE_ANASS",
           link: defaultPdf,
@@ -71,17 +67,6 @@ function ResumeNew() {
   // Helper function to convert buffer to string
   const bufferToString = (buffer) => {
     return String.fromCharCode.apply(null, buffer);
-  };
-
-  // Helper function to convert array buffer to base64 (kept for reference)
-  const arrayBufferToBase64 = (buffer) => {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
   };
 
   return (

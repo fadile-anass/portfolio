@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Modal, Button, Card, Badge, Spinner, Alert, Container } from "react-bootstrap";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -70,7 +70,7 @@ const ListResume = () => {
         // Check if it looks like a file path
         if (filePath.includes('uploads') || filePath.includes('\\') || filePath.includes('/')) {
           // Extract the filename from the path
-          const fileName = filePath.split(/[\\\/]/).pop();
+          const fileName = filePath.split(/[\\/]/).pop();
           // Create a URL to the PDF file on the server
           const pdfUrl = `${process.env.REACT_APP_BACKEND_URI}/uploads/${fileName}`;
           
