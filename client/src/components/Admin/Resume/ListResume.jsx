@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Modal, Button, Card, Badge, Spinner, Alert, Container, Row, Col } from "react-bootstrap";
+import { Modal, Button, Card, Spinner, Alert, Container } from "react-bootstrap";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -15,7 +15,6 @@ const ListResume = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
   const [selectedResumeName, setSelectedResumeName] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     showResumes();

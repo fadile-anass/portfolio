@@ -8,12 +8,10 @@ import Footer from "./components/Footer";
 import Resume from "./components/Resume/ResumeNew";
 import Chatbot from "./components/ChatBot/Chatbot"
 
-
 import {
   BrowserRouter as Router,
   Route,
-  Routes,
-  Navigate
+  Routes
 } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import "./style.css";
@@ -41,10 +39,6 @@ function Client() {
           <Route path="/project" element={<Projects />} />
           <Route path="/about" element={<About />} />
           <Route path="/resume" element={<Resume />} />
-
-          {/* <Route path="*" element={<Navigate to="/"/>} /> */}
-          
-          
         </Routes>
         <Footer />
         <Chatbot/>
